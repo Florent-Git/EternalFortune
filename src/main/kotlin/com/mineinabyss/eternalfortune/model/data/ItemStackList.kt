@@ -5,6 +5,7 @@ import org.bukkit.inventory.ItemStack
 
 class ItemStackList(val itemList: List<ItemStack>) : ConfigurationSerializable {
     companion object {
+        @JvmStatic
         @Suppress("UNCHECKED_CAST")
         fun deserialize(map: Map<String, Any>): ItemStackList {
             requireNotNull(map["items"]) { "Map passed as a parameter is incorrect" }
@@ -34,5 +35,9 @@ class ItemStackList(val itemList: List<ItemStack>) : ConfigurationSerializable {
         }
 
         return map
+    }
+
+    override fun toString(): String {
+        return itemList.toString()
     }
 }

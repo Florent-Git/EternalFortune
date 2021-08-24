@@ -3,8 +3,10 @@ package com.mineinabyss.eternalfortune.listeners
 import be.seeseemelk.mockbukkit.MockBukkit
 import be.seeseemelk.mockbukkit.MockPlugin
 import be.seeseemelk.mockbukkit.ServerMock
+import be.seeseemelk.mockbukkit.entity.PlayerMockFactory
 import com.mineinabyss.eternalfortune.entity.EntitySpawner
 import com.mineinabyss.eternalfortune.model.EternalFortuneRepository
+import org.bukkit.event.entity.PlayerDeathEvent
 import org.junit.Ignore
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -34,8 +36,8 @@ class PlayerEventsTest {
 
         serverMock.pluginManager.registerEvents(playerEvents, pluginMock)
 
-        serverMock.setPlayers(1)
-        serverMock.getPlayer(1).health = 0.0
+        val playerMock = PlayerMockFactory(serverMock).createRandomPlayer()
+        serverMock.pluginManager.callEvent(PlayerDeathEvent(playerMock, listOf(), 5, "Hello world !"))
 
         verify(repositoryMock).insertGrave(any(), any(), any())
     }

@@ -11,22 +11,24 @@ import com.mineinabyss.eternalfortune.model.data.PlayerGraveTable.playerId
 import com.mineinabyss.eternalfortune.model.data.PlayerGrave
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.nio.file.Files
 import java.nio.file.Path
 import java.time.LocalDateTime
+import java.util.*
 import java.util.logging.Level
 
-class EternalFortuneRepositoryImpl(private val plugin: EternalFortune): EternalFortuneRepository {
+class EternalFortuneRepositoryImpl(private val plugin: EternalFortune) : EternalFortuneRepository {
     init {
         plugin.apply {
             val sqllitePath = Path.of(dataFolder.path, "eternalfortune.sqlite")
 
             if (!Files.exists(sqllitePath)) {
                 Files.createFile(sqllitePath)
-                logger.log(Level.CONFIG,"Created database file")
+                logger.log(Level.CONFIG, "Created database file")
             }
 
             Database.connect("jdbc:sqlite:${sqllitePath}", "org.sqlite.JDBC")
@@ -42,6 +44,7 @@ class EternalFortuneRepositoryImpl(private val plugin: EternalFortune): EternalF
     override fun insertGrave(player: OfflinePlayer, deathLocation: Location, inventory: List<ItemStack>) {
         transaction {
             PlayerGraveTable.insert {
+                it[graveId] = UUID.randomUUID()
                 it[playerId] = player.uniqueId
                 it[location] = deathLocation
                 it[items] = ItemStackList(inventory)
@@ -51,8 +54,31 @@ class EternalFortuneRepositoryImpl(private val plugin: EternalFortune): EternalF
     }
 
     override fun getGravesFromPlayer(player: OfflinePlayer): List<PlayerGrave> {
-        return PlayerGraveTable.select { playerId.eq(player.uniqueId) }
-            .map { PlayerGraveTable.toPlayerGrave(it) }
-            .toList()
+        lateinit var returnValue: List<PlayerGrave>
+
+        transaction {
+            returnValue = PlayerGraveTable.select { playerId.eq(player.uniqueId) }
+                .map { PlayerGraveTable.toPlayerGrave(it) }
+                .toList()
+        }
+
+        return returnValue
+    }
+
+    override fun getGraveCount(player: OfflinePlayer): Long {
+        var returnValue = 0L
+
+        transaction {
+            returnValue = PlayerGraveTable.select { playerId eq player.uniqueId }
+                .count()
+        }
+
+        return returnValue
+    }
+
+    override fun removeGrave(graveUuid: UUID) {
+        transaction {
+            PlayerGraveTable.deleteWhere { graveId eq graveUuid }
+        }
     }
 }

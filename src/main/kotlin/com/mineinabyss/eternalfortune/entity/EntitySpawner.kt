@@ -5,4 +5,5 @@ import org.bukkit.entity.Player
 
 interface EntitySpawner {
     fun spawn(player: Player): Entity
+    fun checkType(entity: Entity): Boolean
 }
