@@ -1,4 +1,5 @@
 val exposedVersion: String by project
+val koin_version = "3.1.2"
 
 plugins {
 	id("com.mineinabyss.conventions.kotlin")
@@ -24,6 +25,8 @@ dependencies {
 	slim("org.jetbrains.exposed:exposed-jdbc:$exposedVersion") { isTransitive = false }
 	slim("org.jetbrains.exposed:exposed-java-time:$exposedVersion") { isTransitive = false }
 
+	slim("io.insert-koin:koin-core:$koin_version")
+
 	// Sqlite
 	slim("org.xerial:sqlite-jdbc:3.30.1")
 
@@ -35,7 +38,14 @@ dependencies {
 	implementation("com.github.okkero:Skedule:v1.2.6")
 
 	// Geary
-	compileOnly ("com.mineinabyss:geary-platform-papermc:0.6.48")
+//	compileOnly ("com.mineinabyss:geary-core:0.6.48")
+//	compileOnly ("com.mineinabyss:geary-platform-papermc:0.6.48")
+
+//	slim("com.mineinabyss:geary-platform-papermc:0.6.49")
+//	slim("com.mineinabyss:geary-commons-papermc:0.1.2")
+//	slim("com.github.MineInAbyss:Geary-addons:master-SNAPSHOT")
+
+	compileOnly("com.mineinabyss:geary-platform-papermc:0.6.51")
 
 	testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
 	testImplementation("org.hamcrest:hamcrest:2.2")

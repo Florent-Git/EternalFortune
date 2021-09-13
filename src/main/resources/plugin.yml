@@ -2,3 +2,9 @@ name: EternalFortune
 version: ${plugin_version}
 main: com.mineinabyss.eternalfortune.EternalFortune
 api-version: 1.17
+
+commands:
+  eternalfortune:
+    aliases: [ ef ]
+
+depend: [Geary]

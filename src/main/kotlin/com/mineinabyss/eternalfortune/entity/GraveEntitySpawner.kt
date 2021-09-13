@@ -1,6 +1,8 @@
 package com.mineinabyss.eternalfortune.entity
 
 import com.mineinabyss.eternalfortune.extensions.disableAllSlots
+import net.kyori.adventure.text.Component
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Entity
@@ -11,11 +13,11 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.util.EulerAngle
 
 class GraveEntitySpawner : EntitySpawner {
-    override fun spawn(player: Player): Entity {
-        val location = player.location
+    override fun spawn(entity: Entity): Entity {
+        val location = entity.location
         location.y -= 1.25
 
-        val armorStand: ArmorStand = player.world.spawnEntity(location, EntityType.ARMOR_STAND) as ArmorStand
+        val armorStand: ArmorStand = location.world.spawnEntity(location, EntityType.ARMOR_STAND) as ArmorStand
         val equipment = armorStand.equipment!!
 
         equipment.helmet = ItemStack(Material.MOSSY_COBBLESTONE_SLAB)
